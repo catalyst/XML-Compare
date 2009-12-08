@@ -10,3 +10,5 @@ XML-Compare-*
 cover_db
 /MANIFEST
 /*.bak
+/inc
+/META.*
