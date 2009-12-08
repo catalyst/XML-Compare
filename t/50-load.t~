@@ -1,0 +1,9 @@
+#!/usr/bin/perl
+
+use strict;
+use warnings;
+use Test::More tests => 3;
+
+BEGIN { use_ok( 'Test::XML::Compare') }
+can_ok('Test::XML::Compare', 'is_xml_same');
+can_ok('Test::XML::Compare', 'is_xml_different');
