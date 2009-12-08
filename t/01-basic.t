@@ -2,7 +2,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 9;
+use Test::More tests => 14;
 use XML::Compare;
 
 # $XML::Compare::VERBOSE = 1;
@@ -47,6 +47,21 @@ my $diff = [
        xml2 => '<foo baz="buz"></foo>',
    },
    {
+       name => 'Different Attribute value',
+       xml1 => '<bar foo="bat"></bar>',
+       xml2 => '<bar foo="bar"></foo>',
+   },
+   {
+       name => 'Different element',
+       xml1 => '<bar foo="bar"></bar>',
+       xml2 => '<foo foo="bar"></foo>',
+   },
+   {
+       name => 'Different node type',
+       xml1 => '<foo foo="bar"><baz/></bar>',
+       xml2 => '<foo foo="bar">Hello</foo>',
+   },
+   {
        name => 'Empty xmlns in lower element (not same)',
        xml1 => '<foo xmlns="uri:a"><nothing /></foo>',
        xml2 => '<foo xmlns="uri:a"><nothing xmlns="" /></foo>',
@@ -55,6 +70,16 @@ my $diff = [
        name => 'Empty xmlns in lower element',
        xml1 => '<foo xmlns="uri:a"><nothing xmlns="" /></foo>',
        xml2 => '<a:foo xmlns:a="uri:a"><nothing a:xmlns="" /></a:foo>',
+   },
+   {
+       name => 'TextNode differs',
+       xml1 => '<foo>Hello, world!</foo>',
+       xml2 => '<foo>Hello, World!</foo>',
+   },
+   {
+       name => 'Empty xmlns in upper element',
+       xml1 => '<a:foo xmlns="uri:a"><nothing a:xmlns="" /></foo>',
+       xml2 => '<foo xmlns:a="uri:a"><nothing xmlns="" /></a:foo>',
    },
 ];
 
