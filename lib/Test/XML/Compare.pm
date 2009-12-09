@@ -57,7 +57,7 @@ sub import {
 	my $class = shift @_;
 	Test::XML::Compare->export_to_level(1, $class);
 	$TEST->exported_to(caller);
-	$TEST->plan(@_);
+	$TEST->plan(@_) if @_;
 }
 
 sub is_xml_same($$;$) {

@@ -2,11 +2,11 @@
 
 use strict;
 use warnings;
-use Test::Builder::Tester;
 
-# $Test::XML::Compare::VERBOSE = 1;
+our $tests;
 
-my $tests = [
+BEGIN {
+$tests = [
    {
        name => 'Basic',
        xml1 => '<foo></foo>',
@@ -34,11 +34,12 @@ my $tests = [
        fail => 1,
    },
 ];
+require Test::Builder::Tester;
+Test::Builder::Tester->import(tests => scalar @$tests);
+}
 
-test_out("1..".scalar @$tests);
 require Test::XML::Compare;
-Test::XML::Compare->import(tests => scalar @$tests);
-test_test("planned test OK");
+Test::XML::Compare->import;
 
 my $test_num = 1;
 my $test_name;
