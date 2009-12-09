@@ -151,7 +151,7 @@ sub _are_nodes_same {
             }
             else {
                 _outit($l, 'namespaceURIs are different', $node1->namespaceURI(), $node2->namespaceURI());
-                die 'namespaceURIs are different: (%s, %s)', $ns1, $ns2;
+                die sprintf 'namespaceURIs are different: (%s, %s)', $ns1, $ns2;
             }
         }
         elsif ( !defined $ns1 and !defined $ns2 ) {
@@ -159,7 +159,7 @@ sub _are_nodes_same {
         }
         else {
             _outit($l, 'namespaceURIs are defined/not defined', $ns1, $ns2);
-            die 'namespaceURIs are defined/not defined: (%s, $s)', ($ns1 || '[undef]'), ($ns1 || '[undef]');
+            die sprintf 'namespaceURIs are defined/not defined: (%s, %s)', ($ns1 || '[undef]'), ($ns2 || '[undef]');
         }
     }
 
@@ -173,7 +173,7 @@ sub _are_nodes_same {
         }
         else {
             _outit($l, 'attribute list lengths differ', scalar @attr1, scalar @attr2);
-            die 'attribute list lengths differ: ($d, %d)', scalar @attr1, scalar @attr2;
+            die sprintf 'attribute list lengths differ: (%d, %d)', scalar @attr1, scalar @attr2;
         }
 
         # for each attribute, check they are all the same
