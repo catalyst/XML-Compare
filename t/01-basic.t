@@ -38,6 +38,13 @@ my $same = [
        xml1 => '<foo xmlns="uri:a"><nothing xmlns="" /></foo>',
        xml2 => '<a:foo xmlns:a="uri:a"><nothing xmlns="" /></a:foo>',
    },
+   {
+       name => 'Whitespace ambivalent',
+       xml1 => '<foo xmlns="uri:a"><nothing xmlns="" /></foo>',
+       xml2 => '<a:foo xmlns:a="uri:a">
+   <nothing xmlns="">&#x20;
+</nothing>   </a:foo>',
+   },
 ];
 
 my $diff = [

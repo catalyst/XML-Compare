@@ -185,8 +185,8 @@ sub _are_nodes_same {
     }
 
     # don't need to compare or care about Comments
-    my @nodes1 = grep { ! $_->isa('XML::LibXML::Comment') } $node1->nonBlankChildNodes();
-    my @nodes2 = grep { ! $_->isa('XML::LibXML::Comment') } $node2->nonBlankChildNodes();
+    my @nodes1 = grep { ! $_->isa('XML::LibXML::Comment') and !($_->isa("XML::LibXML::Text") && ($_->data =~ /\A\s*\Z/)) } $node1->childNodes();
+    my @nodes2 = grep { ! $_->isa('XML::LibXML::Comment') and !($_->isa("XML::LibXML::Text") && ($_->data =~ /\A\s*\Z/))  } $node2->childNodes();
 
     # check that the nodes contain the same number of children
     if ( @nodes1 != @nodes2 ) {
