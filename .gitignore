@@ -12,3 +12,4 @@ cover_db
 /*.bak
 /inc
 /META.*
+/SIGNATURE*
