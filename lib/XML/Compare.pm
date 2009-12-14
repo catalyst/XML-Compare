@@ -48,6 +48,22 @@ sub same {
     return _compare($xml1, $xml2);
 }
 
+sub _xpath {
+	my $l = shift;
+	"/".join("/",@$l);
+}
+
+sub _die {
+    my ($l, $fmt, @args) = @_;
+    my $msg;
+    if ( @args ) {
+	    $msg = sprintf $fmt, @args;
+    }
+    else {
+	    $msg = $fmt;
+    }
+    die("[at "._xpath($l)."]: ".$msg);
+}
 sub is_same {
     my ($xml1, $xml2) = @_;
     # catch the exception and return true or false
@@ -67,9 +83,9 @@ sub _compare {
     my ($xml1, $xml2) = @_;
     if ( $VERBOSE ) {
         print '-' x 79, "\n";
-        print $xml1;
+        print $xml1 . ($xml1 =~ /\n\Z/ ? "" : "\n");
         print '-' x 79, "\n";
-        print $xml2;
+        print $xml2 . ($xml2 =~ /\n\Z/ ? "" : "\n");
         print '-' x 79, "\n";
     }
 
@@ -81,7 +97,7 @@ sub _compare {
 
 sub _are_docs_same {
     my ($doc1, $doc2) = @_;
-    return _are_nodes_same( 1, $doc1->documentElement(), $doc2->documentElement() );
+    return _are_nodes_same( [$doc1->documentElement->nodeName], $doc1->documentElement(), $doc2->documentElement() );
 }
 
 sub _are_nodes_same {
@@ -96,7 +112,7 @@ sub _are_nodes_same {
     }
     else {
         _outit($l, 'node types are different', $nt1, $nt2);
-        die sprintf 'node types are different (%s, %s)', $nt1, $nt2;
+        _die $l, 'node types are different (%s, %s)', $nt1, $nt2;
     }
 
     # if these nodes are Text, compare the contents
@@ -109,7 +125,7 @@ sub _are_nodes_same {
         }
         else {
             _outit($l, 'data differs', $data1, $data2);
-            die sprintf 'data differs: (%s, %s)', $data1, $data2;
+            _die $l, 'data differs: (%s, %s)', $data1, $data2;
         }
     }
 
@@ -123,7 +139,7 @@ sub _are_nodes_same {
         }
         else {
             _outit($l, 'attr node values differs', $val1, $val2);
-            die sprintf "attr node values differs (%s, %s)", $val1, $val2
+            _die $l, "attr node values differs (%s, %s)", $val1, $val2
         }
     }
 
@@ -136,7 +152,7 @@ sub _are_nodes_same {
         }
         else {
             _outit($l, 'node names are different', $ln1, $ln2);
-            die sprintf 'node names are different: ', $ln1, $ln2;
+            _die $l, 'node names are different: ', $ln1, $ln2;
         }
     }
 
@@ -151,7 +167,7 @@ sub _are_nodes_same {
             }
             else {
                 _outit($l, 'namespaceURIs are different', $node1->namespaceURI(), $node2->namespaceURI());
-                die sprintf 'namespaceURIs are different: (%s, %s)', $ns1, $ns2;
+                _die $l, 'namespaceURIs are different: (%s, %s)', $ns1, $ns2;
             }
         }
         elsif ( !defined $ns1 and !defined $ns2 ) {
@@ -159,7 +175,7 @@ sub _are_nodes_same {
         }
         else {
             _outit($l, 'namespaceURIs are defined/not defined', $ns1, $ns2);
-            die sprintf 'namespaceURIs are defined/not defined: (%s, %s)', ($ns1 || '[undef]'), ($ns2 || '[undef]');
+            _die $l, 'namespaceURIs are defined/not defined: (%s, %s)', ($ns1 || '[undef]'), ($ns2 || '[undef]');
         }
     }
 
@@ -172,15 +188,14 @@ sub _are_nodes_same {
             _same($l, 'attribute length (' . (scalar @attr1) . ')');
         }
         else {
-            _outit($l, 'attribute list lengths differ', scalar @attr1, scalar @attr2);
-            die sprintf 'attribute list lengths differ: (%d, %d)', scalar @attr1, scalar @attr2;
+            _die $l, 'attribute list lengths differ: (%d, %d)', scalar @attr1, scalar @attr2;
         }
 
         # for each attribute, check they are all the same
         my $total_attrs = scalar @attr1;
         for (my $i = 0; $i < scalar @attr1; $i++ ) {
             # recurse down (either an exception will be thrown, or all are correct
-            _are_nodes_same( $l+1, $attr1[$i], $attr2[$i] );
+            _are_nodes_same( [@$l,'@'.$attr1[$i]->name], $attr1[$i], $attr2[$i] );
         }
     }
 
@@ -190,15 +205,14 @@ sub _are_nodes_same {
 
     # check that the nodes contain the same number of children
     if ( @nodes1 != @nodes2 ) {
-        _outit($l, 'different number of child nodes', scalar @nodes1, scalar @nodes2);
-        die sprintf 'different number of child nodes: (%d, %d)', scalar @nodes1, scalar @nodes2;
+        _die $l, 'different number of child nodes: (%d, %d)', scalar @nodes1, scalar @nodes2;
     }
 
     # foreach of it's children, compare them
     my $total_nodes = scalar @nodes1;
     for (my $i = 0; $i < $total_nodes; $i++ ) {
         # recurse down (either an exception will be thrown, or all are correct
-        _are_nodes_same( $l+1, $nodes1[$i], $nodes2[$i] );
+        _are_nodes_same( [@$l,$nodes1[$i]->nodeName], $nodes1[$i], $nodes2[$i] );
     }
 
     _msg($l, '/');
@@ -217,21 +231,21 @@ sub _fullname {
 sub _same {
     my ($l, $msg) = @_;
     return unless $VERBOSE;
-    print '' . ('  ' x $l) . "= $msg\n";
+    print '' . ('  ' x (@$l+1)) . "= $msg\n";
 }
 
 sub _msg {
     my ($l, $msg) = @_;
     return unless $VERBOSE;
-    print ' ' . ('  ' x ($l-1)) . "$msg\n";
+    print ' ' . ('  ' x (@$l)) ._xpath($l). " $msg\n";
 }
 
 sub _outit {
     my ($l, $msg, $v1, $v2) = @_;
     return unless $VERBOSE;
-    print '' . ('  ' x $l) . "! $msg:\n";
-    print '' . ('  ' x $l) . '. ' . ($v1 || '[undef]') . "\n";
-    print '' . ('  ' x $l) . '. ' . ($v2 || '[undef]') . "\n";
+    print '' . ('  ' x @$l) . "! " ._xpath($l)." $msg:\n";
+    print '' . ('  ' x @$l) . '. ' . ($v1 || '[undef]') . "\n";
+    print '' . ('  ' x @$l) . '. ' . ($v2 || '[undef]') . "\n";
 }
 
 1;
