@@ -9,7 +9,7 @@ use warnings;
 use XML::LibXML;
 
 our $VERSION = '0.01';
-our $VERBOSE = 0;
+our $VERBOSE = $ENV{XML_COMPARE_VERBOSE} || 0;
 
 my $PARSER = XML::LibXML->new();
 
