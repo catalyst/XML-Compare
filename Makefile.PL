@@ -3,6 +3,7 @@ use inc::Module::Install;
 name     'XML-Compare';
 all_from 'lib/XML/Compare.pm';
 author   'Andrew Chilton <andychilton@gmail.com>';
+repository 'git://github.com/catalyst/XML-Compare';
 
 requires        "XML::LibXML" => 1.58;  # oldest tested
 
