@@ -58,6 +58,18 @@ my $same = [
        msg => qr/attr\w* list length\w* differ\w*/i,
        args => [ ignore => [qw( /foo/@bar )] ],
    },
+   {
+       name => 'Ignoring namespace-qualified elements',
+       xml1 => '<foo xmlns="uri:a"><gay:bar xmlns:gay="uri:gay">Bush</gay:bar></foo>',
+       xml2 => '<war:foo xmlns:war="uri:a"><nuclear:bar xmlns:nuclear="uri:gay">Blair</nuclear:bar></war:foo>',
+       args => [
+	       ignore => [qw( /a:foo/b:bar/text() )],
+	       ignore_xmlns => {
+		       a => "uri:a",
+		       b => "uri:gay",
+	       },
+	      ],
+   },
 ];
 
 my $diff = [

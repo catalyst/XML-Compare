@@ -129,11 +129,19 @@ sub _are_docs_same {
     my $ignore = $self->ignore;
     if ( $ignore and @$ignore ) {
 	my $in = {};
-	for my $doc ( $doc1->documentElement,
-		      $doc2->documentElement ) {
+	for my $doc ( map { $_->documentElement } $doc1, $doc2 ) {
+	    my $xpc;
+	    if ( my $ix = $self->ignore_xmlns ) {
+		$xpc = XML::LibXML::XPathContext->new($doc);
+		$xpc->registerNs($_ => $ix->{$_})
+		    for keys %$ix;
+	    }
+	    else {
+		$xpc = $doc;
+	    }
 	    for my $ignore_xpath ( @$ignore ) {
 		$in->{$_->nodePath}=undef
-		    for $doc->findnodes( $ignore_xpath );
+		    for $xpc->findnodes( $ignore_xpath );
 	    }
 	}
 	$self->_ignore_nodes($in);
@@ -151,6 +159,11 @@ sub _are_docs_same {
 has 'ignore' =>
     is => "rw",
     isa => "ArrayRef[Str]",
+    ;
+
+has 'ignore_xmlns' =>
+    is => "rw",
+    isa => "HashRef[Str]",
     ;
 
 has '_ignore_nodes' =>
@@ -417,6 +430,17 @@ is different from C<$xml2>'s (or C<$xml2> has no namespace).
 
 After the 'is_same' method is used, this will contain either the error
 string from the last comparison error, or C<undef>.
+
+=item ignore
+
+An array ref of XPath expressions to 'strip' from the documents before
+comparing.  This is implemented by evaluating each XPath expression at
+the beginning, then removing those nodes from any lists later found.
+
+=item ignore_xmlns
+
+A hashref of prefix => XMLNS, if you used namespaces on any of the
+'ignore' XPath entries.
 
 =back
 
