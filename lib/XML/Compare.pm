@@ -126,12 +126,38 @@ sub _compare {
 sub _are_docs_same {
     my $self = shift;
     my ($doc1, $doc2) = @_;
+    my $ignore = $self->ignore;
+    if ( $ignore and @$ignore ) {
+	my $in = {};
+	for my $doc ( $doc1->documentElement,
+		      $doc2->documentElement ) {
+	    for my $ignore_xpath ( @$ignore ) {
+		$in->{$_->nodePath}=undef
+		    for $doc->findnodes( $ignore_xpath );
+	    }
+	}
+	$self->_ignore_nodes($in);
+    }
+    else {
+	$self->_ignore_nothing;
+    }
     return $self->_are_nodes_same(
 	[ $doc1->documentElement->nodeName ],
 	$doc1->documentElement,
 	$doc2->documentElement,
 	);
 }
+
+has 'ignore' =>
+    is => "rw",
+    isa => "ArrayRef[Str]",
+    ;
+
+has '_ignore_nodes' =>
+    is => "rw",
+    isa => "HashRef[Undef]",
+    clearer => "_ignore_nothing",
+    ;
 
 sub _are_nodes_same {
     my $self = shift;
@@ -217,9 +243,19 @@ sub _are_nodes_same {
 
     # check the attribute list is the same length
     if ( $has->{attributes}{ref $node1} ) {
+
+	my $in = $self->_ignore_nodes;
         # get just the Attrs and sort them by namespaceURI:localname
-        my @attr1 = sort { _fullname($a) cmp _fullname($b) } grep { defined and $_->isa('XML::LibXML::Attr') } $node1->attributes();
-        my @attr2 = sort { _fullname($a) cmp _fullname($b) } grep { defined and $_->isa('XML::LibXML::Attr') } $node2->attributes();
+        my @attr1 = sort { _fullname($a) cmp _fullname($b) }
+	    grep { !$in or !exists $in->{$_->nodePath} }
+		grep { defined and $_->isa('XML::LibXML::Attr') }
+		    $node1->attributes();
+
+        my @attr2 = sort { _fullname($a) cmp _fullname($b) }
+	    grep { !$in or !exists $in->{$_->nodePath} }
+		grep { defined and $_->isa('XML::LibXML::Attr') }
+		    $node2->attributes();
+
         if ( scalar @attr1 == scalar @attr2 ) {
             _same($l, 'attribute length (' . (scalar @attr1) . ')');
         }
@@ -235,9 +271,19 @@ sub _are_nodes_same {
         }
     }
 
+    my $in = $self->_ignore_nodes;
+
     # don't need to compare or care about Comments
-    my @nodes1 = grep { ! $_->isa('XML::LibXML::Comment') and !($_->isa("XML::LibXML::Text") && ($_->data =~ /\A\s*\Z/)) } $node1->childNodes();
-    my @nodes2 = grep { ! $_->isa('XML::LibXML::Comment') and !($_->isa("XML::LibXML::Text") && ($_->data =~ /\A\s*\Z/))  } $node2->childNodes();
+    my @nodes1 = grep { !$in or !exists $in->{$_->nodePath} }
+	grep { ! $_->isa('XML::LibXML::Comment') and
+		   !($_->isa("XML::LibXML::Text") && ($_->data =~ /\A\s*\Z/))
+	       }
+	    $node1->childNodes();
+
+    my @nodes2 = grep { !$in or !exists $in->{$_->nodePath} }
+	grep { ! $_->isa('XML::LibXML::Comment') and
+		   !($_->isa("XML::LibXML::Text") && ($_->data =~ /\A\s*\Z/))
+	       } $node2->childNodes();
 
     # check that the nodes contain the same number of children
     if ( @nodes1 != @nodes2 ) {
@@ -248,7 +294,14 @@ sub _are_nodes_same {
     my $total_nodes = scalar @nodes1;
     for (my $i = 0; $i < $total_nodes; $i++ ) {
         # recurse down (either an exception will be thrown, or all are correct
-        $self->_are_nodes_same( [@$l,$nodes1[$i]->nodeName], $nodes1[$i], $nodes2[$i] );
+	my $xpath_nodeName;
+	my $nn = $nodes1[$i]->nodeName;
+	if ( grep { $_->nodeName eq $nn }
+		 @nodes1[0..$i-1, $i+1..$#nodes1] ) {
+	    $nn .= "[position()=".($i+1)."]";
+	}
+	$nn =~ s{#text}{text()};
+        $self->_are_nodes_same( [@$l,$nn], $nodes1[$i], $nodes2[$i] );
     }
 
     _msg($l, '/');
