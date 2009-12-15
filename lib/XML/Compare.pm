@@ -3,10 +3,8 @@
 ## ----------------------------------------------------------------------------
 package XML::Compare;
 
-use 5.006;
-use strict;
-use warnings;
 use XML::LibXML;
+use Any::Moose;
 
 our $VERSION = '0.01';
 our $VERBOSE = $ENV{XML_COMPARE_VERBOSE} || 0;
@@ -44,13 +42,30 @@ my $has = {
 # acts almost like an assertion (either returns true or throws an exception)
 sub same {
     my ($xml1, $xml2) = @_;
+    my $self = __PACKAGE__->new();
     # either throws an exception, or returns true
-    return _compare($xml1, $xml2);
+    return $self->_compare($xml1, $xml2);;
 }
 
+sub is_same {
+    my ($xml1, $xml2) = @_;
+    # catch the exception and return true or false
+    eval { same($xml1, $xml2); };
+    if ( $@ ) {
+        return 0;
+    }
+    return 1;
+}
+
+sub is_different {
+    my ($xml1, $xml2) = @_;
+    return !is_same($xml1, $xml2);
+}
+
+# private functions
 sub _xpath {
-	my $l = shift;
-	"/".join("/",@$l);
+    my $l = shift;
+    "/".join("/",@$l);
 }
 
 sub _die {
@@ -64,23 +79,10 @@ sub _die {
     }
     die("[at "._xpath($l)."]: ".$msg);
 }
-sub is_same {
-    my ($xml1, $xml2) = @_;
-    # catch the exception and return true or false
-    eval { _compare($xml1, $xml2); };
-    if ( $@ ) {
-        return 0;
-    }
-    return 1;
-}
-
-sub is_different {
-    my ($xml1, $xml2) = @_;
-    return !is_same($xml1, $xml2);
-}
 
 sub _compare {
-    my ($xml1, $xml2) = @_;
+    my $self = shift;
+    my ($xml1, $xml2) = (@_);
     if ( $VERBOSE ) {
         print '-' x 79, "\n";
         print $xml1 . ($xml1 =~ /\n\Z/ ? "" : "\n");
@@ -92,15 +94,21 @@ sub _compare {
     my $parser = XML::LibXML->new();
     my $doc1 = $parser->parse_string( $xml1 );
     my $doc2 = $parser->parse_string( $xml2 );
-    return _are_docs_same($doc1, $doc2);
+    return $self->_are_docs_same($doc1, $doc2);
 }
 
 sub _are_docs_same {
+    my $self = shift;
     my ($doc1, $doc2) = @_;
-    return _are_nodes_same( [$doc1->documentElement->nodeName], $doc1->documentElement(), $doc2->documentElement() );
+    return $self->_are_nodes_same(
+	[ $doc1->documentElement->nodeName ],
+	$doc1->documentElement,
+	$doc2->documentElement,
+	);
 }
 
 sub _are_nodes_same {
+    my $self = shift;
     my ($l, $node1, $node2) = @_;
     _msg($l, "\\ got (" . ref($node1) . ", " . ref($node2) . ")");
 
@@ -195,7 +203,7 @@ sub _are_nodes_same {
         my $total_attrs = scalar @attr1;
         for (my $i = 0; $i < scalar @attr1; $i++ ) {
             # recurse down (either an exception will be thrown, or all are correct
-            _are_nodes_same( [@$l,'@'.$attr1[$i]->name], $attr1[$i], $attr2[$i] );
+            $self->_are_nodes_same( [@$l,'@'.$attr1[$i]->name], $attr1[$i], $attr2[$i] );
         }
     }
 
@@ -212,7 +220,7 @@ sub _are_nodes_same {
     my $total_nodes = scalar @nodes1;
     for (my $i = 0; $i < $total_nodes; $i++ ) {
         # recurse down (either an exception will be thrown, or all are correct
-        _are_nodes_same( [@$l,$nodes1[$i]->nodeName], $nodes1[$i], $nodes2[$i] );
+        $self->_are_nodes_same( [@$l,$nodes1[$i]->nodeName], $nodes1[$i], $nodes2[$i] );
     }
 
     _msg($l, '/');
