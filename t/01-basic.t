@@ -24,6 +24,12 @@ my $same = [
        xml2 => '<f:foo xmlns:f="urn:foo"></f:foo>',
    },
    {
+       name => 'Basic with implied NS',
+       xml1 => '<foo></foo>',
+       xml2 => '<f:foo xmlns:f="urn:foo"></f:foo>',
+       args => [ namespace_strict => 0 ],
+   },
+   {
        name => 'Same Attributes',
        xml1 => '<foo foo="bar" baz="buz"></foo>',
        xml2 => '<foo baz="buz" foo="bar"></foo>',
@@ -85,6 +91,12 @@ my $diff = [
        msg => qr/namespaceURI.*defined/i,
    },
    {
+       name => 'Basic with implied NS - but strict',
+       xml1 => '<foo></foo>',
+       xml2 => '<f:foo xmlns:f="urn:foo"></f:foo>',
+       args => [ namespace_strict => 1 ],
+   },
+   {
        name => 'Empty xmlns in lower element',
        xml1 => '<foo xmlns="uri:a"><nothing xmlfoo="" /></foo>',
        xml2 => '<a:foo xmlns:a="uri:a"><nothing a:xmlfoo="" /></a:foo>',
@@ -105,11 +117,13 @@ my $diff = [
 ];
 
 foreach my $t ( @$same ) {
-    ok( XML::Compare::is_same($t->{xml1}, $t->{xml2}), $t->{name} );
+    my $xml_c = XML::Compare->new( @{ $t->{args} || [] } );
+    ok( $xml_c->is_same($t->{xml1}, $t->{xml2}), $t->{name} );
 }
 
 foreach my $t ( @$diff ) {
-    ok( XML::Compare::is_different($t->{xml1}, $t->{xml2}), $t->{name} );
+    my $xml_c = XML::Compare->new( @{ $t->{args} || [] } );
+    ok( $xml_c->is_different($t->{xml1}, $t->{xml2}), $t->{name} );
     my $err = $@;
     if ($t->{msg}) {
 	like($err, $t->{msg}, "$t->{name} exception");

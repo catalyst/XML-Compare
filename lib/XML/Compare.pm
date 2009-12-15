@@ -39,18 +39,35 @@ my $has = {
     },
 };
 
+has 'namespace_strict' =>
+    is => "rw",
+    isa => "Bool",
+    default => 0,
+    ;
+
+sub _self {
+    my $args = shift;
+    if ( @$args == 3 ) {
+	shift @$args;
+    }
+    else {
+	__PACKAGE__->new();
+    }
+}
+
 # acts almost like an assertion (either returns true or throws an exception)
 sub same {
+    my $self = _self(\@_);
     my ($xml1, $xml2) = @_;
-    my $self = __PACKAGE__->new();
     # either throws an exception, or returns true
     return $self->_compare($xml1, $xml2);;
 }
 
 sub is_same {
+    my $self = _self(\@_);
     my ($xml1, $xml2) = @_;
     # catch the exception and return true or false
-    eval { same($xml1, $xml2); };
+    eval { $self->same($xml1, $xml2); };
     if ( $@ ) {
         return 0;
     }
@@ -58,8 +75,9 @@ sub is_same {
 }
 
 sub is_different {
+    my $self = _self(\@_);
     my ($xml1, $xml2) = @_;
-    return !is_same($xml1, $xml2);
+    return !$self->is_same($xml1, $xml2);
 }
 
 # private functions
@@ -182,8 +200,10 @@ sub _are_nodes_same {
             _same($l, 'namespaceURI (not defined for either node)');
         }
         else {
-            _outit($l, 'namespaceURIs are defined/not defined', $ns1, $ns2);
-            _die $l, 'namespaceURIs are defined/not defined: (%s, %s)', ($ns1 || '[undef]'), ($ns2 || '[undef]');
+	    if ( $self->namespace_strict or defined $ns1 ) {
+		_outit($l, 'namespaceURIs are defined/not defined', $ns1, $ns2);
+		_die $l, 'namespaceURIs are defined/not defined: (%s, %s)', ($ns1 || '[undef]'), ($ns2 || '[undef]');
+	    }
         }
     }
 
@@ -278,6 +298,12 @@ XML::Compare - Test if two XML documents semantically the same
         print "different: $@\n";
     }
 
+    # OO interface, if you want to customise operation
+    my $xml_compare = XML::Compare->new( namespace_strict => 1 );
+    if ($xml_compare->is_same($xml1, $xml2)) {
+         # same!
+    }
+
 =head1 DESCRIPTION
 
 This module allows you to test if two XML documents are semantically the
@@ -309,6 +335,19 @@ Returns true if the two xml strings are semantically different. No diagnostic
 information is available.
 
 Returns false otherwise.
+
+=back
+
+=head1 PROPERTIES
+
+=over
+
+=item namespace_strict
+
+(Bool) If this property is set, then all the namespaces of both
+documents must match exactly.  The default, unset, raises an error
+only if the first document, C<$xml1>, has a namespace defined and this
+is different from C<$xml2>'s (or C<$xml2> has no namespace).
 
 =back
 
