@@ -45,6 +45,12 @@ has 'namespace_strict' =>
     default => 0,
     ;
 
+has 'error' =>
+    is => "rw",
+    isa => "Str",
+    clearer => "_clear_error",
+    ;
+
 sub _self {
     my $args = shift;
     if ( @$args == 3 ) {
@@ -67,8 +73,10 @@ sub is_same {
     my $self = _self(\@_);
     my ($xml1, $xml2) = @_;
     # catch the exception and return true or false
+    $self->_clear_error;
     eval { $self->same($xml1, $xml2); };
     if ( $@ ) {
+	$self->error($@);
         return 0;
     }
     return 1;
@@ -303,6 +311,9 @@ XML::Compare - Test if two XML documents semantically the same
     if ($xml_compare->is_same($xml1, $xml2)) {
          # same!
     }
+    else {
+        print "different: ".$xml_compare->error."\n";
+    }
 
 =head1 DESCRIPTION
 
@@ -348,6 +359,11 @@ Returns false otherwise.
 documents must match exactly.  The default, unset, raises an error
 only if the first document, C<$xml1>, has a namespace defined and this
 is different from C<$xml2>'s (or C<$xml2> has no namespace).
+
+=item error
+
+After the 'is_same' method is used, this will contain either the error
+string from the last comparison error, or C<undef>.
 
 =back
 

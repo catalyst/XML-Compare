@@ -118,7 +118,8 @@ my $diff = [
 
 foreach my $t ( @$same ) {
     my $xml_c = XML::Compare->new( @{ $t->{args} || [] } );
-    ok( $xml_c->is_same($t->{xml1}, $t->{xml2}), $t->{name} );
+    ok( $xml_c->is_same($t->{xml1}, $t->{xml2}), $t->{name} )
+	    or diag($xml_c->error);
 }
 
 foreach my $t ( @$diff ) {
