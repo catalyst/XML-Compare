@@ -6,7 +6,7 @@ package XML::Compare;
 use XML::LibXML;
 use Any::Moose;
 
-our $VERSION = '0.01';
+our $VERSION = '0.02';
 our $VERBOSE = $ENV{XML_COMPARE_VERBOSE} || 0;
 
 my $PARSER = XML::LibXML->new();
@@ -471,3 +471,20 @@ license is compatible with both the GNU GPL and Artistic licenses.  A copy of
 this license is supplied with the distribution in the file COPYING.txt.
 
 =cut
+
+# Local Variables:
+# mode:cperl
+# indent-tabs-mode: f
+# cperl-continued-statement-offset: 4
+# cperl-brace-offset: 0
+# cperl-close-paren-offset: 0
+# cperl-continued-brace-offset: 0
+# cperl-continued-statement-offset: 4
+# cperl-extra-newline-before-brace: nil
+# cperl-indent-level: 4
+# cperl-indent-parens-as-block: t
+# cperl-indent-wrt-brace: nil
+# cperl-label-offset: -4
+# cperl-merge-trailing-else: t
+# End:
+# vim: filetype=perl:noexpandtab:ts=3:sw=3

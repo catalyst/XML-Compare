@@ -1,5 +1,5 @@
-XML-Compare      v0.01
-Test-XML-Compare v0.01
+XML-Compare      v0.02
+Test-XML-Compare v0.02
 ======================
 
 These two modules help enable you to check if two XML documents are
@@ -63,6 +63,11 @@ Written by Andrew Chilton:
 
 * andychilton@gmail.com
 * andy@catalyst.net.nz
+
+Hacked on by Sam Vilain:
+
+* sam@vilain.net
+* samv@catalyst.net.nz
 
 This software development is sponsored and directed by New Zealand Registry
 Services, http://www.nzrs.net.nz/

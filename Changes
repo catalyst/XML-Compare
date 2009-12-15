@@ -1,4 +1,18 @@
-Revision history for XML-Compare
+Revision history for XML-Compare (see the git log for more)
+
+0.02    2009-12-15
+       Sam Vilain (10):
+          Fix incorrect use of '$@' in synopsis
+          [admin] .gitignore debian files
+          Add link to github repository
+          Allow debugging to be enabled via an environment variable
+          Pass around xpath context, for contextual exceptions
+          Møøse
+          Add namespace_strict diff option
+          Store the exception in an object property
+          Add support for ignoring parts of the XML based on XPath expressions
+          Add namespace support to ignore, document ignore
+
 
 0.01    2009-12-08 15:26:28
         First version.

@@ -19,8 +19,7 @@ our @EXPORT = qw(
     is_xml_same is_xml_different
 );
 
-our $VERSION = '0.01';
-our $VERBOSE = 0;
+our $VERSION = '0.02';
 
 my $TEST = Test::Builder->new();
 my $PARSER = XML::LibXML->new();

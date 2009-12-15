@@ -4,8 +4,6 @@ use strict;
 use warnings;
 use Test::XML::Compare tests => 1;
 
-$Test::XML::Compare::VERBOSE = 1;
-
 my $tests = [
    {
        name => 'Comment Ignored',
