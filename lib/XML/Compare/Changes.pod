@@ -1,0 +1,78 @@
+=head1 CHANGELOG FOR XML::Compare
+
+=head2 VERSION 0.03, 25 JUNE 2010
+
+=over
+
+=item *
+
+Added this XML::Assert::Changes.pod file
+
+=back
+
+=head2 VERSION 0.02, 15 DECEMBER 2009
+
+=over
+
+=item *
+
+Add namespace support to ignore, document ignore
+
+=item *
+
+Add support for ignoring parts of the XML based on XPath expressions
+
+=item *
+
+Store the exception in an object property
+
+=item *
+
+Add namespace_strict diff option
+
+=item *
+
+Møøse
+
+=item *
+
+Pass around xpath context, for contextual exceptions
+
+=item *
+
+Allow debugging to be enabled via an environment variable
+
+=item *
+
+Add link to github repository
+
+=item *
+
+[admin] .gitignore debian files
+
+=item *
+
+Fix incorrect use of '$@' in synopsis
+
+=back
+
+=head2 VERSION 0.01, 09 DECEMBER 2009
+
+=over
+
+=item *
+
+Initial version
+
+=over
+
+=item *
+
+Added same, is_same, is_different
+
+=back
+
+=back
+
+=cut
+
