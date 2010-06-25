@@ -1,0 +1,13 @@
+This is the debian package for the XML-Compare module.
+It was created by Andrew Chilton <andy@catalyst.net.nz> using dh-make-perl.
+
+It was downloaded from http://search.cpan.org/dist/XML-Compare/
+
+This copyright info was automatically extracted from the perl module.
+It may not be accurate, so you better check the module sources
+if you don't want to get into legal troubles.
+
+The upstream author is: Andrew Chilton <andychilton@gmail.com>.
+
+The Debian packaging is (C) 2010, Sam Vilain <sam.vilain@catalyst.net.nz> and
+is licensed under the same terms as the software itself (see above).

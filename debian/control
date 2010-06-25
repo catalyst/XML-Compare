@@ -1,0 +1,20 @@
+Source: libxml-compare-perl
+Section: perl
+Priority: optional
+Build-Depends: debhelper (>= 5)
+Build-Depends-Indep: perl (>= 5.6.10-12)
+Maintainer: Sam Vilain <sam.vilain@catalyst.net.nz>
+Standards-Version: 3.8.0
+Homepage: http://search.cpan.org/dist/XML-Compare/
+
+Package: libxml-compare-perl
+Architecture: all
+Depends: ${perl:Depends}, ${misc:Depends}, libxml-libxml-perl (>= 1.58), libany-moose-perl
+Description: Test if two XML documents semantically the same
+ This module allows you to test if two XML documents are semantically the
+ same. This also holds true if different prefixes are being used for the xmlns,
+ or if there is a default xmlns in place.
+ .
+ It uses XML::Compare to do all of it's checking.
+ .
+ This description was automagically extracted from the module by dh-make-perl.
