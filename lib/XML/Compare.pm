@@ -400,8 +400,8 @@ XML::Compare - Test if two XML documents semantically the same
 
     use XML::Compare tests => 2;
 
-    my $xml1 = "<foo xmlns="urn:message"><bar baz="buzz">text</bar></foo>";
-    my $xml2 = "<f:foo xmlns:f="urn:message"><f:bar baz="buzz">text</f:bar></f:foo>";
+    my $xml1 = '<foo xmlns="urn:message"><bar baz="buzz">text</bar></foo>';
+    my $xml2 = '<f:foo xmlns:f="urn:message"><f:bar baz="buzz">text</f:bar></f:foo>';
 
     my $same = eval { XML::Compare::same($xml1, $xml2); };
     if ( $same ) {
@@ -417,7 +417,7 @@ XML::Compare - Test if two XML documents semantically the same
          # same!
     }
     else {
-        print "different: ".$xml_compare->error."\n";
+        print "different: " . $xml_compare->error . "\n";
     }
 
 =head1 DESCRIPTION
