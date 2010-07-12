@@ -6,7 +6,7 @@ package XML::Compare;
 use XML::LibXML;
 use Any::Moose;
 
-our $VERSION = '0.03';
+our $VERSION = '0.04';
 our $VERBOSE = $ENV{XML_COMPARE_VERBOSE} || 0;
 
 my $PARSER = XML::LibXML->new();

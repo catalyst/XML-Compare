@@ -1,5 +1,15 @@
 =head1 CHANGELOG FOR XML::Compare
 
+=head2 VERSION 0.04, 12 JULY 2010
+
+=over
+
+=item *
+
+Change to example POD to fix up quotes
+
+=back
+
 =head2 VERSION 0.03, 25 JUNE 2010
 
 =over
