@@ -1,3 +1,9 @@
+libxml-compare-perl (0.04) unstable; urgency=low
+
+  * Updates to the documentation
+
+ -- Andrew Chilton <andy@catalyst.net.nz>  Mon, 12 Jul 2010 12:21:35 +1200
+
 libxml-compare-perl (0.03) unstable; urgency=low
 
   * Added the Changes.pod file
