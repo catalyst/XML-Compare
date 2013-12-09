@@ -209,7 +209,7 @@ sub _are_nodes_same {
         my $val1 = $node1->getValue();
         my $val2 = $node2->getValue();
         # _msg($l, ": val ($val1, $val2)");
-        if ( $val1 eq $val2 ) {
+        if ( $val1 eq $val2 || $val1 == $val2 ) {
             _same($l, "value");
         }
         else {
