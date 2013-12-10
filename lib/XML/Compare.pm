@@ -8,6 +8,7 @@ use Moo 2;
 use MooX::Types::MooseLike::Base qw(Bool Str ArrayRef HashRef Undef);
 
 use XML::LibXML 1.58;
+use Scalar::Util qw(looks_like_number);
 
 our $VERBOSE = $ENV{XML_COMPARE_VERBOSE} || 0;
 
@@ -209,7 +210,7 @@ sub _are_nodes_same {
         my $val1 = $node1->getValue();
         my $val2 = $node2->getValue();
         # _msg($l, ": val ($val1, $val2)");
-        if ( $val1 eq $val2 || $val1 == $val2 ) {
+        if ( $val1 eq $val2 || (looks_like_number $val1 && $val1 == $val2) ) {
             _same($l, "value");
         }
         else {
