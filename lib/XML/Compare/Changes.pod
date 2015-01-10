@@ -1,3 +1,5 @@
+=encoding utf8
+
 =head1 CHANGELOG FOR XML::Compare
 
 =head2 VERSION 0.04, 12 JULY 2010
