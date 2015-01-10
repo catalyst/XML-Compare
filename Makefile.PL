@@ -12,6 +12,8 @@ build_requires 'Test::More';
 build_requires 'Test::Builder::Tester';
 test_requires 'Test::Exception';
 
+perl_version '5.006'; #As reported by Perl::MinimumVersion
+
 include 'Test::Exception';
 include 'Sub::Uplevel';
 
