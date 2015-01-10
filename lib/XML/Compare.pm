@@ -7,6 +7,7 @@ use XML::LibXML;
 use Any::Moose;
 
 use strict;
+use warnings;
 
 our $VERSION = '0.04';
 our $VERBOSE = $ENV{XML_COMPARE_VERBOSE} || 0;
