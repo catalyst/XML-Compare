@@ -6,6 +6,9 @@ package XML::Compare;
 use XML::LibXML;
 use Any::Moose;
 
+use strict;
+use warnings;
+
 our $VERSION = '0.04';
 our $VERBOSE = $ENV{XML_COMPARE_VERBOSE} || 0;
 
@@ -91,7 +94,7 @@ sub is_different {
 # private functions
 sub _xpath {
     my $l = shift;
-    "/".join("/",@$l);
+    return "/".join("/",@$l);
 }
 
 sub _die {
@@ -243,7 +246,7 @@ sub _are_nodes_same {
                 _die $l, 'namespaceURIs are different: (%s, %s)', $ns1, $ns2;
             }
         }
-        elsif ( !defined $ns1 and !defined $ns2 ) {
+        elsif ( (!defined $ns1) and (!defined $ns2) ) {
             _same($l, 'namespaceURI (not defined for either node)');
         }
         else {
@@ -260,12 +263,12 @@ sub _are_nodes_same {
 	my $in = $self->_ignore_nodes;
         # get just the Attrs and sort them by namespaceURI:localname
         my @attr1 = sort { _fullname($a) cmp _fullname($b) }
-	    grep { !$in or !exists $in->{$_->nodePath} }
+	    grep { (!$in) or (!exists $in->{$_->nodePath}) }
 		grep { defined and $_->isa('XML::LibXML::Attr') }
 		    $node1->attributes();
 
         my @attr2 = sort { _fullname($a) cmp _fullname($b) }
-	    grep { !$in or !exists $in->{$_->nodePath} }
+	    grep { (!$in) or (!exists $in->{$_->nodePath}) }
 		grep { defined and $_->isa('XML::LibXML::Attr') }
 		    $node2->attributes();
 
@@ -287,15 +290,15 @@ sub _are_nodes_same {
     my $in = $self->_ignore_nodes;
 
     # don't need to compare or care about Comments
-    my @nodes1 = grep { !$in or !exists $in->{$_->nodePath} }
-	grep { ! $_->isa('XML::LibXML::Comment') and
-		   !($_->isa("XML::LibXML::Text") && ($_->data =~ /\A\s*\Z/))
+    my @nodes1 = grep { (!$in) or (!exists $in->{$_->nodePath}) }
+	grep { (not $_->isa('XML::LibXML::Comment')) and
+		   not ( $_->isa("XML::LibXML::Text") && ($_->data =~ /\A\s*\Z/) )
 	       }
 	    $node1->childNodes();
 
-    my @nodes2 = grep { !$in or !exists $in->{$_->nodePath} }
-	grep { ! $_->isa('XML::LibXML::Comment') and
-		   !($_->isa("XML::LibXML::Text") && ($_->data =~ /\A\s*\Z/))
+    my @nodes2 = grep { (!$in) or (!exists $in->{$_->nodePath}) }
+	grep { (not $_->isa('XML::LibXML::Comment')) and
+		   not ( $_->isa("XML::LibXML::Text") && ($_->data =~ /\A\s*\Z/) )
 	       } $node2->childNodes();
 
     # firstly, convert all CData nodes to Text Nodes
@@ -315,7 +318,6 @@ sub _are_nodes_same {
     my $total_nodes = scalar @nodes1;
     for (my $i = 0; $i < $total_nodes; $i++ ) {
         # recurse down (either an exception will be thrown, or all are correct
-	my $xpath_nodeName;
 	my $nn = $nodes1[$i]->nodeName;
 	if ( grep { $_->nodeName eq $nn }
 		 @nodes1[0..$i-1, $i+1..$#nodes1] ) {
