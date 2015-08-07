@@ -3,11 +3,10 @@
 ## ----------------------------------------------------------------------------
 package XML::Compare;
 
-use XML::LibXML;
-use Any::Moose;
+use Moo;
+use MooX::Types::MooseLike::Base qw(Bool Str ArrayRef HashRef Undef);
 
-use strict;
-use warnings;
+use XML::LibXML;
 
 our $VERSION = '0.04';
 our $VERBOSE = $ENV{XML_COMPARE_VERBOSE} || 0;
@@ -44,13 +43,13 @@ my $has = {
 
 has 'namespace_strict' =>
     is => "rw",
-    isa => "Bool",
+    isa => Bool,
     default => 0,
     ;
 
 has 'error' =>
     is => "rw",
-    isa => "Str",
+    isa => Str,
     clearer => "_clear_error",
     ;
 
@@ -161,17 +160,17 @@ sub _are_docs_same {
 
 has 'ignore' =>
     is => "rw",
-    isa => "ArrayRef[Str]",
+    isa => ArrayRef[Str],
     ;
 
 has 'ignore_xmlns' =>
     is => "rw",
-    isa => "HashRef[Str]",
+    isa => HashRef[Str],
     ;
 
 has '_ignore_nodes' =>
     is => "rw",
-    isa => "HashRef[Undef]",
+    isa => HashRef[Undef],
     clearer => "_ignore_nothing",
     ;
 
