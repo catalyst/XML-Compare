@@ -6,7 +6,8 @@ author   'Andrew Chilton <andychilton@gmail.com>';
 repository 'https://github.com/catalyst/XML-Compare';
 
 requires        "XML::LibXML" => 1.58;  # oldest tested
-requires        "Any::Moose" => 0;
+requires        "Moo" => 2;             # so warnings are not fatal
+requires        "MooX::Types::MooseLike";
 
 build_requires 'Test::More';
 build_requires 'Test::Builder::Tester';
