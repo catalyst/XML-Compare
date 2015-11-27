@@ -3,12 +3,12 @@
 ## ----------------------------------------------------------------------------
 package XML::Compare;
 
-use Moo;
+use 5.006;
+use Moo 2;
 use MooX::Types::MooseLike::Base qw(Bool Str ArrayRef HashRef Undef);
 
-use XML::LibXML;
+use XML::LibXML 1.58;
 
-our $VERSION = '0.04';
 our $VERBOSE = $ENV{XML_COMPARE_VERBOSE} || 0;
 
 my $PARSER = XML::LibXML->new();
@@ -492,9 +492,14 @@ Nothing.
 
 L<XML::LibXML>
 
+=head1 REPOSITORY
+
+L<https://github.com/neilb/XML-Compare>
+
 =head1 AUTHOR
 
-Andrew Chilton, E<lt>andychilton@gmail.com<gt>, E<lt>andy@catalyst dot net dot nz<gt>
+Andrew Chilton, E<lt>andychilton@gmail.comE<gt>,
+E<lt>andy@catalyst dot net dot nz<gt>
 
 http://www.chilts.org/blog/
 

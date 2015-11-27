@@ -1,7 +1,8 @@
 Revision history for Perl module XML::Compare
 
 0.05 2015-11-27 NEILB
-    - Switched to Dist::Zilla
+    - Switched to Dist::Zilla, in the process ensuring releases have
+      a META.json file and a LICENSE file.
 
 0.04 2010-07-12 CHILTS
     - Change to example POD to fix up quotes
