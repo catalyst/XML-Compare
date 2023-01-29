@@ -1,5 +1,8 @@
 Revision history for Perl module XML::Compare
 
+0.06 2022-01-29 PUCK (NOT RELEASED)
+    - Use numerical comparision for numbers.
+
 0.05 2015-11-27 NEILB
     - Switched to Dist::Zilla, in the process ensuring releases have
       a META.json file and a LICENSE file.
