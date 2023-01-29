@@ -499,22 +499,21 @@ L<https://github.com/neilb/XML-Compare>
 
 =head1 AUTHOR
 
-Andrew Chilton, E<lt>andychilton@gmail.comE<gt>,
-E<lt>andy@catalyst dot net dot nz<gt>
+Andrew Chilton, E<lt>andychilton@gmail.comE<gt>
 
 http://www.chilts.org/blog/
 
 =head1 COPYRIGHT & LICENSE
 
-This software development is sponsored and directed by New Zealand Registry
-Services, http://www.nzrs.net.nz/
+Initial software development was sponsored and directed by New Zealand
+Registry Services, http://www.nzrs.net.nz/ . The work was carried out by
+Catalyst IT, http://www.catalyst.net.nz/
 
-The work is being carried out by Catalyst IT, http://www.catalyst.net.nz/
-
-Copyright (c) 2009, NZ Registry Services.  All Rights Reserved.  This software
-may be used under the terms of the Artistic License 2.0.  Note that this
-license is compatible with both the GNU GPL and Artistic licenses.  A copy of
-this license is supplied with the distribution in the file COPYING.txt.
+Copyright (c) 2009-2010, NZ Registry Services.  All Rights Reserved.  This
+software may be used under the terms of the Artistic License 2.0.  Note that
+this license is compatible with both the GNU GPL and Artistic licenses.  A
+copy of this license is supplied with the distribution in the file
+COPYING.txt.
 
 =cut
 
